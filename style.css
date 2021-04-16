@@ -1,0 +1,19 @@
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.landingContainer {
+  text-align: center;
+}
+
+#landingHeader {
+  width: 60%;
+  margin: auto;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#registerLink {
+  cursor: pointer;
+  display: inline-block;
+}
