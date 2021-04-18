@@ -17,3 +17,7 @@ body {
   cursor: pointer;
   display: inline-block;
 }
+
+.checkbox-text {
+  display: inline;
+}
