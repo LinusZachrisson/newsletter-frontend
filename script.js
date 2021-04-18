@@ -12,6 +12,20 @@ const registerTemplate = () => {
   return template;
 };
 
+const getUser = async (id) => {
+  const res = await fetch(`http://localhost:3000/users/${id}`);
+  const user = res.json();
+  console.log(user);
+  //template = `<h2>Hi and welcome to your page !</h2>`
+  return user;
+};
+
+const userTemplate = (user) => {
+  console.log(user);
+  template = `<h2>Hi and welcome to your page ${user.user}!</h2>`;
+  return template;
+};
+
 document.addEventListener("click", (event) => {
   if (event.target && event.target.id === "registerLink") {
     render(registerTemplate);
@@ -44,7 +58,7 @@ document.addEventListener("click", (event) => {
 
   if (event.target && event.target.id === "loginBtn") {
     let existingUser = {
-      mail: emailInput.value,
+      email: emailInput.value,
       password: passwordInput.value,
     };
 
@@ -57,7 +71,9 @@ document.addEventListener("click", (event) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        getUser(data.user).then((res) => {
+          const template = userTemplate();
+        });
       });
   }
 });
