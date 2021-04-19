@@ -5,8 +5,6 @@ const loginTemplate = () => {
   return template;
 };
 
-document.addEventListener("click", (event) => {});
-
 const registerTemplate = () => {
   template = `<div><h4>Username:</h4> <input type="text" placeholder="Username" id="registerNameInput"> <br> <h4>E-mail: (must contain a valid E-mail)</h4> <input type="text" placeholder="E-mail" id="registerEmailInput"> <br> <h4>Password: (must contain minimum of 6 characters)</h4> <input type="password" placeholder="Password" id="registerPasswordInput"> <br> <div class="checkbox-text">Tick this box to get our amazing newsletter!</div> <input type="checkbox" id="newsletterCheckbox"> <br> <button id="registerBtn">Submit</button></div>`;
   return template;
@@ -16,13 +14,17 @@ const getUser = async (id) => {
   const res = await fetch(`http://localhost:3000/users/${id}`);
   const user = res.json();
   console.log(user);
-  //template = `<h2>Hi and welcome to your page !</h2>`
   return user;
 };
 
 const userTemplate = (user) => {
   console.log(user);
   template = `<h2>Hi and welcome to your page ${user.user}!</h2>`;
+  if (user.newsletter === true) {
+    template += `<p> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button>Click here!</button></p>`;
+  } else {
+    template += `<p> You are not subscribed to our newsletter yet, please do! <br> if you wish to do that now <button>Click here!</button></p>`;
+  }
   return template;
 };
 
@@ -71,9 +73,8 @@ document.addEventListener("click", (event) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        getUser(data.user).then((res) => {
-          const template = userTemplate();
-        });
+        console.log(data);
+        getUser(data.user).then((res) => render(() => userTemplate(res)));
       });
   }
 });
