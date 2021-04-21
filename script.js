@@ -12,15 +12,15 @@ const registerTemplate = () => {
 
 const getUser = async (id) => {
   const res = await fetch(`http://localhost:3000/users/${id}`);
-  const user = res.json();
+  const user = await res.json();
   console.log(user);
+  localStorage.setItem("user", JSON.stringify(user));
   return user;
 };
 
-const userTemplate = (user) => {
-  console.log(user);
-  localStorage.setItem("id", user.id);
-  template = `<h2>Hi and welcome to your page ${user.user}!</h2>`;
+const userTemplate = () => {
+  const user = JSON.parse(localStorage.getItem("user"))
+  template = `<h2>Hi and welcome to your page ${user.user}!</h2> <button id="logoutBtn">Log out</button>`;
   if (user.newsletter === true) {
     template += `<p> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button id="unsubscribeBtn">Click here!</button></p>`;
   } else {
@@ -29,11 +29,36 @@ const userTemplate = (user) => {
   return template;
 };
 
+const unsubscribeMessageTemplate = () => {
+  const user = JSON.parse(localStorage.getItem("user"))
+  template = `<h3> Im sorry our newsletter did not fulfill your needs ${user.user}</h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div>`
+  return template;
+}
+
+const subscribeMessageTemplate = () => {
+  template = `<h3> Congrats, you decided to join our newsletter club, I promise we wont let you down! </h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div>`
+  return template;
+}
+
 let userId = localStorage.getItem("id");
 
 const changeSubscribtion = async () => {
   const res = await fetch(
     `http://localhost:3000/users/changesubscription/${userId}`,
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const subscription = res.json();
+  console.log(subscription);
+};
+
+const changeToSubscribe = async () => {
+  const res = await fetch(
+    `http://localhost:3000/users/changetosubscribe/${userId}`,
     {
       method: "post",
       headers: {
@@ -73,6 +98,7 @@ document.addEventListener("click", (event) => {
       .then((data) => {
         console.log(data);
       });
+      render(loginTemplate);
   }
 
   if (event.target && event.target.id === "loginBtn") {
@@ -91,13 +117,24 @@ document.addEventListener("click", (event) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        getUser(data.user).then((res) => render(() => userTemplate(res)));
+        getUser(data.user).then(() => render(userTemplate));
       });
   }
 
   if (event.target && event.target.id === "unsubscribeBtn") {
     changeSubscribtion(userId);
+    render(unsubscribeMessageTemplate);
   }
+
+  if (event.target && event.target.id === "subscribeBtn") {
+    changeToSubscribe(userId);
+    render(subscribeMessageTemplate);
+  }
+
+  if (event.target && event.target.id === "returnToUserPageBtn") {
+    render(userTemplate);
+  }
+
 });
 
 let render = (template) => {
