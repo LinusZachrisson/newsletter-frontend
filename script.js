@@ -1,8 +1,11 @@
 const root = document.getElementById("root");
 
+//let logedInUser = JSON.parse(localStorage.getItem("user"));
+let user = JSON.parse(localStorage.getItem("user"));
+console.log("user", user);
 const checkIfUserIsLogedin = () => {
-  let logedinUser = JSON.parse(localStorage.getItem("user"));
-  if(logedinUser) {
+  
+  if(user) {
     render(userTemplate)
   } else {
     render(loginTemplate)
@@ -21,14 +24,15 @@ const registerTemplate = () => {
 
 const getUser = async (id) => {
   const res = await fetch(`http://localhost:3000/users/${id}`);
-  const user = await res.json();
-  console.log(user);
-  localStorage.setItem("user", JSON.stringify(user));
-  return user;
+  const userId = await res.json();
+  //console.log(userId);
+  localStorage.setItem("user", JSON.stringify(userId));
+  return userId;
 };
 
 const userTemplate = () => {
-  const user = JSON.parse(localStorage.getItem("user"))
+  user = JSON.parse(localStorage.getItem("user"));
+  //const user = JSON.parse(localStorage.getItem("user"))
   template = `<h2 class="user-template-header">Hi and welcome to your page ${user.user}!</h2> <button id="logoutBtn">Log out</button>`;
   if (user.newsletter === true) {
     template += `<p class="user-template"> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button id="unsubscribeBtn">Click here!</button></p>`;
@@ -39,22 +43,22 @@ const userTemplate = () => {
 };
 
 const unsubscribeMessageTemplate = () => {
-  const user = JSON.parse(localStorage.getItem("user"))
+  //const user = JSON.parse(localStorage.getItem("user"))
   template = `<div class="subscribtion-template"><h3> Im sorry our newsletter did not fulfill your needs ${user.user} <i class="far fa-frown"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
   return template;
 }
 
 const subscribeMessageTemplate = () => {
-  const user = JSON.parse(localStorage.getItem("user"))
+  //const user = JSON.parse(localStorage.getItem("user"))
   template = `<div class="subscribtion-template"><h3> Congrats ${user.user}, you decided to join our newsletter club, I promise we wont let you down! <i class="far fa-smile"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
   return template;
 }
 
-let userId = JSON.parse(localStorage.getItem("user"));
-
 const changeSubscribtion = async () => {
+  user = JSON.parse(localStorage.getItem("user"))
+  console.log("user1", user);
   const res = await fetch(
-    `http://localhost:3000/users/changesubscription/${userId.id}`,
+    `http://localhost:3000/users/changesubscription/${user.id}`,
     {
       method: "post",
       headers: {
@@ -62,13 +66,16 @@ const changeSubscribtion = async () => {
       },
     }
   );
-  const subscription = res.json();
-  console.log(subscription);
+  const subscription = await res.json();
+  localStorage.setItem("user", JSON.stringify(subscription))
+  console.log("1", subscription);
 };
 
 const changeToSubscribe = async () => {
+  user = JSON.parse(localStorage.getItem("user"))
+  console.log("user2", user);
   const res = await fetch(
-    `http://localhost:3000/users/changetosubscribe/${userId.id}`,
+    `http://localhost:3000/users/changetosubscribe/${user.id}`,
     {
       method: "post",
       headers: {
@@ -76,8 +83,9 @@ const changeToSubscribe = async () => {
       },
     }
   );
-  const subscription = res.json();
-  console.log(subscription);
+  const subscription = await res.json();
+  localStorage.setItem("user", JSON.stringify(subscription))
+  console.log("2", subscription);
 };
 
 document.addEventListener("click", (event) => {
@@ -132,12 +140,12 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target && event.target.id === "unsubscribeBtn") {
-    changeSubscribtion(userId);
+    changeSubscribtion();
     render(unsubscribeMessageTemplate);
   }
 
   if (event.target && event.target.id === "subscribeBtn") {
-    changeToSubscribe(userId);
+    changeToSubscribe();
     render(subscribeMessageTemplate);
   }
 
