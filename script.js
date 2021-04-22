@@ -1,12 +1,21 @@
 const root = document.getElementById("root");
 
+const checkIfUserIsLogedin = () => {
+  let logedinUser = JSON.parse(localStorage.getItem("user"));
+  if(logedinUser) {
+    render(userTemplate)
+  } else {
+    render(loginTemplate)
+  }
+}
+
 const loginTemplate = () => {
   template = `<div class="landingContainer"><h1 id="landingHeader">Welcome to this fantastic site, please log in or register a user so you can recive our amazing newsletter!</h1><input type="text" placeholder="E-mail" id="emailInput"> <input type="password" placeholder="Password" id="passwordInput"> <button id="loginBtn">Log in</button> <br> <div id="registerLink">Dont have an account? Register here!</div></div>`;
   return template;
 };
 
 const registerTemplate = () => {
-  template = `<div><h4>Username:</h4> <input type="text" placeholder="Username" id="registerNameInput"> <br> <h4>E-mail: (must contain a valid E-mail)</h4> <input type="text" placeholder="E-mail" id="registerEmailInput"> <br> <h4>Password: (must contain minimum of 6 characters)</h4> <input type="password" placeholder="Password" id="registerPasswordInput"> <br> <div class="checkbox-text">Tick this box to get our amazing newsletter!</div> <input type="checkbox" id="newsletterCheckbox"> <br> <button id="registerBtn">Submit</button></div>`;
+  template = `<div class="register-container"><h4>Username: (must contain minimum of 6 characters)</h4> <input type="text" placeholder="Username" id="registerNameInput"> <br> <h4>E-mail: (must contain a valid E-mail)</h4> <input type="text" placeholder="E-mail" id="registerEmailInput"> <br> <h4>Password: (must contain minimum of 6 characters)</h4> <input type="password" placeholder="Password" id="registerPasswordInput"> <br> <div class="checkbox-text">Tick this box to get our amazing newsletter!</div> <input type="checkbox" id="newsletterCheckbox"> <br> <button id="registerBtn">Submit</button></div>`;
   return template;
 };
 
@@ -20,31 +29,32 @@ const getUser = async (id) => {
 
 const userTemplate = () => {
   const user = JSON.parse(localStorage.getItem("user"))
-  template = `<h2>Hi and welcome to your page ${user.user}!</h2> <button id="logoutBtn">Log out</button>`;
+  template = `<h2 class="user-template-header">Hi and welcome to your page ${user.user}!</h2> <button id="logoutBtn">Log out</button>`;
   if (user.newsletter === true) {
-    template += `<p> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button id="unsubscribeBtn">Click here!</button></p>`;
+    template += `<p class="user-template"> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button id="unsubscribeBtn">Click here!</button></p>`;
   } else {
-    template += `<p> You are not subscribed to our newsletter yet, please do! <br> if you wish to do that now <button id="subscribeBtn">Click here!</button></p>`;
+    template += `<p class="user-template"> You are not subscribed to our newsletter yet, please do! <br> if you wish to do that now <button id="subscribeBtn">Click here!</button></p>`;
   }
   return template;
 };
 
 const unsubscribeMessageTemplate = () => {
   const user = JSON.parse(localStorage.getItem("user"))
-  template = `<h3> Im sorry our newsletter did not fulfill your needs ${user.user}</h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div>`
+  template = `<div class="subscribtion-template"><h3> Im sorry our newsletter did not fulfill your needs ${user.user} <i class="far fa-frown"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
   return template;
 }
 
 const subscribeMessageTemplate = () => {
-  template = `<h3> Congrats, you decided to join our newsletter club, I promise we wont let you down! </h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div>`
+  const user = JSON.parse(localStorage.getItem("user"))
+  template = `<div class="subscribtion-template"><h3> Congrats ${user.user}, you decided to join our newsletter club, I promise we wont let you down! <i class="far fa-smile"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
   return template;
 }
 
-let userId = localStorage.getItem("id");
+let userId = JSON.parse(localStorage.getItem("user"));
 
 const changeSubscribtion = async () => {
   const res = await fetch(
-    `http://localhost:3000/users/changesubscription/${userId}`,
+    `http://localhost:3000/users/changesubscription/${userId.id}`,
     {
       method: "post",
       headers: {
@@ -58,7 +68,7 @@ const changeSubscribtion = async () => {
 
 const changeToSubscribe = async () => {
   const res = await fetch(
-    `http://localhost:3000/users/changetosubscribe/${userId}`,
+    `http://localhost:3000/users/changetosubscribe/${userId.id}`,
     {
       method: "post",
       headers: {
@@ -135,10 +145,19 @@ document.addEventListener("click", (event) => {
     render(userTemplate);
   }
 
+  if (event.target && event.target.id === "logoutBtn") {
+    logOut()
+    render(loginTemplate)
+  }
+
 });
+
+let logOut = () => {
+  localStorage.removeItem("user");
+}
 
 let render = (template) => {
   root.innerHTML = template();
 };
 
-render(loginTemplate);
+checkIfUserIsLogedin();

@@ -1,9 +1,15 @@
 body {
   font-family: "Poppins", sans-serif;
+  background-color: #222f3e;
 }
 
 .landingContainer {
   text-align: center;
+  color: #c8d6e5;
+}
+
+.register-container {
+  color: #c8d6e5;
 }
 
 #landingHeader {
@@ -16,6 +22,33 @@ body {
 #registerLink {
   cursor: pointer;
   display: inline-block;
+  color: #0abde3;
+}
+
+#registerLink:hover {
+  opacity: 0.5;
+}
+
+.user-template-header {
+  color: #00d2d3;
+}
+
+.user-template {
+  color: #c8d6e5;
+}
+
+.subscribtion-template {
+  color: #c8d6e5;
+}
+
+#returnToUserPageBtn {
+  cursor: pointer;
+  display: inline-block;
+  color: #0abde3;
+}
+
+#returnToUserPageBtn:hover {
+  opacity: 0.5;
 }
 
 .checkbox-text {
