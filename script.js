@@ -3,7 +3,6 @@ const root = document.getElementById("root");
 //checking localstorage if users is loged in
 
 let user = JSON.parse(localStorage.getItem("user"));
-console.log("user", user);
 const checkIfUserIsLogedin = () => {
   if (user) {
     render(userTemplate);
@@ -58,9 +57,7 @@ const subscribeMessageTemplate = () => {
 
 const changeSubscribtion = async () => {
   user = JSON.parse(localStorage.getItem("user"));
-  console.log("user1", user);
   const res = await fetch(
-    // `http://localhost:3000/users/changesubscription/${user.id}`,
     `https://get-my-newsletter.herokuapp.com/users/changesubscription/${user.id}`,
     {
       method: "post",
@@ -71,14 +68,11 @@ const changeSubscribtion = async () => {
   );
   const subscription = await res.json();
   localStorage.setItem("user", JSON.stringify(subscription));
-  console.log("1", subscription);
 };
 
 const changeToSubscribe = async () => {
   user = JSON.parse(localStorage.getItem("user"));
-  console.log("user2", user);
   const res = await fetch(
-    // `http://localhost:3000/users/changetosubscribe/${user.id}`,
     `https://get-my-newsletter.herokuapp.com/users/changetosubscribe/${user.id}`,
     {
       method: "post",
@@ -89,7 +83,6 @@ const changeToSubscribe = async () => {
   );
   const subscription = await res.json();
   localStorage.setItem("user", JSON.stringify(subscription));
-  console.log("2", subscription);
 };
 
 //all eventlisteners in app
@@ -106,7 +99,6 @@ document.addEventListener("click", (event) => {
       newsletter: newsletterCheckbox.checked,
     };
 
-    //fetch(`http://localhost:3000/api/user/register`, {
     fetch(`https://get-my-newsletter.herokuapp.com/api/user/register`, {
       method: "post",
       headers: {
@@ -127,7 +119,6 @@ document.addEventListener("click", (event) => {
       password: passwordInput.value,
     };
 
-    //fetch(`http://localhost:3000/api/user/login`, {
     fetch(`https://get-my-newsletter.herokuapp.com/api/user/login`, {
       method: "post",
       headers: {
