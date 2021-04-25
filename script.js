@@ -1,5 +1,7 @@
 const root = document.getElementById("root");
 
+//checking localstorage if users is loged in
+
 let user = JSON.parse(localStorage.getItem("user"));
 console.log("user", user);
 const checkIfUserIsLogedin = () => {
@@ -9,6 +11,8 @@ const checkIfUserIsLogedin = () => {
     render(loginTemplate);
   }
 };
+
+//templates for different stages of app
 
 const loginTemplate = () => {
   template = `<div class="landingContainer"><h1 id="landingHeader">Welcome to this fantastic site, please log in or register a user so you can recive our amazing newsletter!</h1><input type="text" placeholder="E-mail" id="emailInput"> <input type="password" placeholder="Password" id="passwordInput"> <button id="loginBtn">Log in</button> <br> <div id="registerLink">Dont have an account? Register here!</div></div>`;
@@ -50,6 +54,8 @@ const subscribeMessageTemplate = () => {
   return template;
 };
 
+//fetch to change subscription status
+
 const changeSubscribtion = async () => {
   user = JSON.parse(localStorage.getItem("user"));
   console.log("user1", user);
@@ -85,6 +91,8 @@ const changeToSubscribe = async () => {
   localStorage.setItem("user", JSON.stringify(subscription));
   console.log("2", subscription);
 };
+
+//all eventlisteners in app
 
 document.addEventListener("click", (event) => {
   if (event.target && event.target.id === "registerLink") {
@@ -154,9 +162,13 @@ document.addEventListener("click", (event) => {
   }
 });
 
+//log out function
+
 let logOut = () => {
   localStorage.removeItem("user");
 };
+
+//render template function
 
 let render = (template) => {
   root.innerHTML = template();
