@@ -1,16 +1,14 @@
 const root = document.getElementById("root");
 
-//let logedInUser = JSON.parse(localStorage.getItem("user"));
 let user = JSON.parse(localStorage.getItem("user"));
 console.log("user", user);
 const checkIfUserIsLogedin = () => {
-  
-  if(user) {
-    render(userTemplate)
+  if (user) {
+    render(userTemplate);
   } else {
-    render(loginTemplate)
+    render(loginTemplate);
   }
-}
+};
 
 const loginTemplate = () => {
   template = `<div class="landingContainer"><h1 id="landingHeader">Welcome to this fantastic site, please log in or register a user so you can recive our amazing newsletter!</h1><input type="text" placeholder="E-mail" id="emailInput"> <input type="password" placeholder="Password" id="passwordInput"> <button id="loginBtn">Log in</button> <br> <div id="registerLink">Dont have an account? Register here!</div></div>`;
@@ -23,16 +21,16 @@ const registerTemplate = () => {
 };
 
 const getUser = async (id) => {
-  const res = await fetch(`http://localhost:3000/users/${id}`);
+  const res = await fetch(
+    `https://get-my-newsletter.herokuapp.com/users/${id}`
+  );
   const userId = await res.json();
-  //console.log(userId);
   localStorage.setItem("user", JSON.stringify(userId));
   return userId;
 };
 
 const userTemplate = () => {
   user = JSON.parse(localStorage.getItem("user"));
-  //const user = JSON.parse(localStorage.getItem("user"))
   template = `<h2 class="user-template-header">Hi and welcome to your page ${user.user}!</h2> <button id="logoutBtn">Log out</button>`;
   if (user.newsletter === true) {
     template += `<p class="user-template"> You are subscribed to our newsletter! <br> if you wish to unsubscribe <button id="unsubscribeBtn">Click here!</button></p>`;
@@ -43,22 +41,21 @@ const userTemplate = () => {
 };
 
 const unsubscribeMessageTemplate = () => {
-  //const user = JSON.parse(localStorage.getItem("user"))
-  template = `<div class="subscribtion-template"><h3> Im sorry our newsletter did not fulfill your needs ${user.user} <i class="far fa-frown"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
+  template = `<div class="subscribtion-template"><h3> Im sorry our newsletter did not fulfill your needs ${user.user} <i class="far fa-frown"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`;
   return template;
-}
+};
 
 const subscribeMessageTemplate = () => {
-  //const user = JSON.parse(localStorage.getItem("user"))
-  template = `<div class="subscribtion-template"><h3> Congrats ${user.user}, you decided to join our newsletter club, I promise we wont let you down! <i class="far fa-smile"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`
+  template = `<div class="subscribtion-template"><h3> Congrats ${user.user}, you decided to join our newsletter club, I promise we wont let you down! <i class="far fa-smile"></i></h3> <p> If you were to change your mind again just return to your page </p> <div id="returnToUserPageBtn"> Click here to return to your page </div></div>`;
   return template;
-}
+};
 
 const changeSubscribtion = async () => {
-  user = JSON.parse(localStorage.getItem("user"))
+  user = JSON.parse(localStorage.getItem("user"));
   console.log("user1", user);
   const res = await fetch(
-    `http://localhost:3000/users/changesubscription/${user.id}`,
+    // `http://localhost:3000/users/changesubscription/${user.id}`,
+    `https://get-my-newsletter.herokuapp.com/users/changesubscription/${user.id}`,
     {
       method: "post",
       headers: {
@@ -67,15 +64,16 @@ const changeSubscribtion = async () => {
     }
   );
   const subscription = await res.json();
-  localStorage.setItem("user", JSON.stringify(subscription))
+  localStorage.setItem("user", JSON.stringify(subscription));
   console.log("1", subscription);
 };
 
 const changeToSubscribe = async () => {
-  user = JSON.parse(localStorage.getItem("user"))
+  user = JSON.parse(localStorage.getItem("user"));
   console.log("user2", user);
   const res = await fetch(
-    `http://localhost:3000/users/changetosubscribe/${user.id}`,
+    // `http://localhost:3000/users/changetosubscribe/${user.id}`,
+    `https://get-my-newsletter.herokuapp.com/users/changetosubscribe/${user.id}`,
     {
       method: "post",
       headers: {
@@ -84,7 +82,7 @@ const changeToSubscribe = async () => {
     }
   );
   const subscription = await res.json();
-  localStorage.setItem("user", JSON.stringify(subscription))
+  localStorage.setItem("user", JSON.stringify(subscription));
   console.log("2", subscription);
 };
 
@@ -93,11 +91,6 @@ document.addEventListener("click", (event) => {
     render(registerTemplate);
   }
   if (event.target && event.target.id === "registerBtn") {
-    console.log(registerNameInput.value);
-    console.log(registerEmailInput.value);
-    console.log(registerPasswordInput.value);
-    console.log(newsletterCheckbox.checked);
-
     let newUser = {
       name: registerNameInput.value,
       email: registerEmailInput.value,
@@ -105,7 +98,8 @@ document.addEventListener("click", (event) => {
       newsletter: newsletterCheckbox.checked,
     };
 
-    fetch(`http://localhost:3000/api/user/register`, {
+    //fetch(`http://localhost:3000/api/user/register`, {
+    fetch(`https://get-my-newsletter.herokuapp.com/api/user/register`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -116,7 +110,7 @@ document.addEventListener("click", (event) => {
       .then((data) => {
         console.log(data);
       });
-      render(loginTemplate);
+    render(loginTemplate);
   }
 
   if (event.target && event.target.id === "loginBtn") {
@@ -125,7 +119,8 @@ document.addEventListener("click", (event) => {
       password: passwordInput.value,
     };
 
-    fetch(`http://localhost:3000/api/user/login`, {
+    //fetch(`http://localhost:3000/api/user/login`, {
+    fetch(`https://get-my-newsletter.herokuapp.com/api/user/login`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -154,15 +149,14 @@ document.addEventListener("click", (event) => {
   }
 
   if (event.target && event.target.id === "logoutBtn") {
-    logOut()
-    render(loginTemplate)
+    logOut();
+    render(loginTemplate);
   }
-
 });
 
 let logOut = () => {
   localStorage.removeItem("user");
-}
+};
 
 let render = (template) => {
   root.innerHTML = template();
